@@ -698,7 +698,10 @@ typedef
 #if BX_SUPPORT_3DNOW
   #define BX_CPU_VENDOR_INTEL 0
 #else
-  #define BX_CPU_VENDOR_INTEL 1
+//AO  #define BX_CPU_VENDOR_INTEL 1
+//AO new
+#define BX_CPU_VENDOR_INTEL 0
+//AO new
 #endif
 
 // Maximum CPUID vendor and brand string lengths
