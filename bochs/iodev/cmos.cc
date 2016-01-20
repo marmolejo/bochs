@@ -379,8 +379,6 @@ Bit32u bx_cmos_c::read(Bit32u address, unsigned io_len)
 #endif
   Bit8u ret8;
 
-  BX_DEBUG(("CMOS read of CMOS register 0x%02x", (unsigned) BX_CMOS_THIS s.cmos_mem_address));
-
   switch (address) {
     case 0x0070:
       // this register is write-only on most machines
@@ -393,6 +391,8 @@ Bit32u bx_cmos_c::read(Bit32u address, unsigned io_len)
         BX_CMOS_THIS s.reg[REG_STAT_C] = 0x00;
         DEV_pic_lower_irq(8);
       }
+      BX_DEBUG(("CMOS read of CMOS register 0x%02x = 0x%02x",
+        (unsigned) BX_CMOS_THIS s.cmos_mem_address, (unsigned) ret8));
       return(ret8);
 
     default:
