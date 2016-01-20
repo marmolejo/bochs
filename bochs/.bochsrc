@@ -1,0 +1,15 @@
+cpuid: level=4, vendor_string="GeniuneAO486", brand_string="ao486                                           "
+romimage: file=/home/z/z/ao486/sd/bios/bios # bios/BIOS-bochs-legacy
+memory: guest=128, host=128
+vgaromimage: file=/home/z/z/ao486/sd/vgabios/vgabios #bios/VGABIOS-lgpl-latest
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+#ata0-master: type=disk, path="msdos6.img", mode=flat, cylinders=520, heads=16, spt=63
+ata0-master: type=disk, path="../redhat6.img", mode=flat, cylinders=1024, heads=16, spt=63
+#ata0-slave: type=cdrom, path="/home/z/Downloads/redhat-6.2-i386.iso", status=inserted
+boot: floppy, disk
+mouse: enabled=1
+clock: sync=none, rct_sync=0, time0=1453197733
+debug: action=ignore, harddrv=report, cmos=report, pic=report
+info: action=report, memory=ignore
+logprefix: %e%d
+#floppya: 1_44="a-zet.img", status=inserted

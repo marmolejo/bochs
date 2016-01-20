@@ -1,0 +1,17 @@
+#!/bin/bash
+CXXFLAGS="-ggdb -O0" \
+LDFLAGS="-pthread" \
+./configure \
+  --enable-plugins=yes \
+  --enable-cpu-level=4 \
+  --enable-fpu=no \
+  --enable-pci=no \
+  --enable-readline=no \
+  --enable-debugger=yes \
+  --enable-debugger-gui=no \
+  --enable-disasm=yes \
+  --enable-x86-debugger=yes \
+  --enable-iodebug=yes \
+  --enable-assert-checks=no \
+  --enable-xpm=yes \
+  --prefix=$HOME/opt/bochs
