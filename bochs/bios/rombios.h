@@ -39,10 +39,10 @@
 #define DEBUG_INT74        0
 #define DEBUG_APM          0
 
-#define PANIC_PORT  0x400
-#define PANIC_PORT2 0x401
-#define INFO_PORT   0x402
-#define DEBUG_PORT  0x403
+#define PANIC_PORT  0x8888 //ao 0x400
+#define PANIC_PORT2 0x8888 //ao 0x401
+#define INFO_PORT   0x8888 //ao 0x402
+#define DEBUG_PORT  0x8888 //ao 0x403
 
 #define BIOS_PRINTF_HALT     1
 #define BIOS_PRINTF_SCREEN   2
@@ -95,19 +95,19 @@
 #define BX_USE_EBDA      1
 #define BX_SUPPORT_FLOPPY 1
 #define BX_FLOPPY_ON_CNT 37   /* 2 seconds */
-#define BX_PCIBIOS       1
-#define BX_APM           1
-#define BX_PNPBIOS       1
+#define BX_PCIBIOS       0 //ao
+#define BX_APM           0 //ao
+#define BX_PNPBIOS       0 //ao
 /* define it if the (emulated) hardware supports SMM mode */
 #define BX_USE_SMM
 
 #define BX_USE_ATADRV    1
-#define BX_ELTORITO_BOOT 1
+#define BX_ELTORITO_BOOT 0 //ao
 
 #define BX_MAX_ATA_INTERFACES   4
 #define BX_MAX_ATA_DEVICES      (BX_MAX_ATA_INTERFACES*2)
 
-#define BX_VIRTUAL_PORTS 1 /* normal output to Bochs ports */
+#define BX_VIRTUAL_PORTS 0 //ao /* normal output to Bochs ports */
 #define BX_DEBUG_SERIAL  0 /* output to COM1 */
 
    /* model byte 0xFC = AT */

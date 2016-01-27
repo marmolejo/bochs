@@ -176,7 +176,7 @@ MACRO HALT
   ;; However, users can choose to make panics non-fatal and continue.
 #if BX_VIRTUAL_PORTS
   mov dx,#PANIC_PORT
-  mov ax,#?1
+  mov ax,#0x21 //ao #?1
   out dx,ax
 #else
   mov dx,#0x80
@@ -1531,8 +1531,12 @@ send(action, c)
   uart_tx_byte(BX_DEBUG_PORT, c);
 #endif
 #if BX_VIRTUAL_PORTS
-  if (action & BIOS_PRINTF_DEBUG) outb(DEBUG_PORT, c);
-  if (action & BIOS_PRINTF_INFO) outb(INFO_PORT, c);
+  if((action & BIOS_PRINTF_DEBUG) || (action & BIOS_PRINTF_INFO) || (action & BIOS_PRINTF_SCREEN)) {
+    while(inw(DEBUG_PORT+6) == 0) { ; }
+  }
+  if (action & BIOS_PRINTF_DEBUG)  outb(DEBUG_PORT, c);
+  if (action & BIOS_PRINTF_INFO)   outb(INFO_PORT, c);
+  if (action & BIOS_PRINTF_SCREEN) outb(INFO_PORT, c);
 #endif
   if (action & BIOS_PRINTF_SCREEN) {
     if (c == '\n') wrch('\r');
@@ -1696,7 +1700,7 @@ bios_printf(action, s)
 
   if ((action & BIOS_PRINTF_DEBHALT) == BIOS_PRINTF_DEBHALT) {
 #if BX_VIRTUAL_PORTS
-    outb(PANIC_PORT2, 0x00);
+    outb(PANIC_PORT2, '&'); //ao 0x00
 #endif
     bios_printf (BIOS_PRINTF_SCREEN, "FATAL: ");
   }
@@ -2503,7 +2507,9 @@ static int await_ide(when_done,base,timeout)
   Bit16u base;
   Bit16u timeout;
 {
-  Bit32u time=0,last=0;
+//AO modif
+  Bit16u time=0,last=0;
+//AO modif
   Bit16u status;
   Bit8u result;
   status = inb(base + ATA_CB_STAT); // for the times you're supposed to throw one away
@@ -2524,17 +2530,27 @@ static int await_ide(when_done,base,timeout)
       result = 0;
 
     if (result) return 0;
-    if (time>>16 != last) // mod 2048 each 16 ms
+//AO modif
+    if (time>>8 != last) // mod 2048 each 16 ms
+//AO modif
     {
-      last = time >>16;
-      BX_DEBUG_ATA("await_ide: (TIMEOUT,BSY,!BSY,!BSY_DRQ,!BSY_!DRQ,!BSY_RDY) %d time= %ld timeout= %d\n",when_done,time>>11, timeout);
+//AO modif
+      last = time >>8;
+//AO modif
+//AO modif
+      BX_DEBUG_ATA("await_ide: (TIMEOUT,BSY,!BSY,!BSY_DRQ,!BSY_!DRQ,!BSY_RDY) %d time= %ld timeout= %d, status= %x\n",when_done,time>>3, timeout, status);
+//AO modif
     }
     if (status & ATA_CB_STAT_ERR)
     {
-      BX_DEBUG_ATA("await_ide: ERROR (TIMEOUT,BSY,!BSY,!BSY_DRQ,!BSY_!DRQ,!BSY_RDY) %d time= %ld timeout= %d\n",when_done,time>>11, timeout);
+//AO modif
+      BX_DEBUG_ATA("await_ide: ERROR (TIMEOUT,BSY,!BSY,!BSY_DRQ,!BSY_!DRQ,!BSY_RDY) %d time= %ld timeout= %d\n",when_done,time>>3, timeout);
+//AO modif
       return -1;
     }
-    if ((timeout == 0) || ((time>>11) > timeout)) break;
+//AO modif
+    if ((timeout == 0) || ((time>>3) > timeout)) break;
+//AO modif
   }
   BX_INFO("IDE time out\n");
   return -1;
@@ -3093,7 +3109,10 @@ ASM_END
     current++;
     write_word_DS(&EbdaData->ata.trsfsectors,current);
     count--;
-    if(ioflag == 0) await_ide(NOT_BSY, iobase1, IDE_TIMEOUT);
+//AO modification start
+//modif    if(ioflag == 0) await_ide(NOT_BSY, iobase1, IDE_TIMEOUT);
+    await_ide(NOT_BSY, iobase1, IDE_TIMEOUT);
+//AO modification end
     status = inb(iobase1 + ATA_CB_STAT);
     if(ioflag == 0)
     {
